@@ -4,6 +4,8 @@ const port = 3000;
 require("dotenv").config();
 const fs = require("fs");
 
+app.use(express.json());
+
 const { Client } = require("@elastic/elasticsearch");
 const client = new Client({
   node: "https://localhost:9200",
@@ -150,17 +152,50 @@ app.get("/", (req, res) => {
 });
 
 app.post("/search", (req, res) => {
-  client
-    .search({
-      index: "ryadh-caffees-test",
-      body: {
-        query: {
-          match_phrase: {
-            coffeeName: req.body.coffeeName,
-          },
+  // look what filters are available in the body
+  console.log(req.body);
+  const { hours, rating, rating_count } = req.body;
+  let hoursunset = hours === null ? true : false;
+  let filters = {
+    index: "ryadh-caffees-test",
+    body: {
+      size: 20,
+      query: {
+        bool: {
+          must: [],
         },
       },
-    })
+    },
+  };
+
+  if (!hoursunset) {
+    filters["body"]["query"]["bool"]["must"].push({
+      match: {
+        "24_hours": hours,
+      },
+    });
+  }
+  if (rating) {
+    filters["body"]["query"]["bool"]["must"].push({
+      range: {
+        rating: {
+          gte: rating,
+        },
+      },
+    });
+  }
+  if (rating_count) {
+    filters["body"]["query"]["bool"]["must"].push({
+      range: {
+        rating_count: {
+          gte: rating_count,
+        },
+      },
+    });
+  }
+
+  client
+    .search(filters)
     .then((result) => {
       res.send(result);
     })
