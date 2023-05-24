@@ -3,6 +3,8 @@ const app = express();
 const port = 3000;
 require("dotenv").config();
 const fs = require("fs");
+const cors = require("cors");
+app.use(cors());
 
 app.use(express.json());
 
@@ -154,7 +156,7 @@ app.get("/", (req, res) => {
 app.post("/search", (req, res) => {
   // look what filters are available in the body
   console.log(req.body);
-  const { hours, rating, rating_count } = req.body;
+  const { hours, rating, rating_count, search_query } = req.body;
   let hoursunset = hours === null ? true : false;
   let filters = {
     index: "ryadh-caffees-test",
@@ -190,6 +192,13 @@ app.post("/search", (req, res) => {
         rating_count: {
           gte: rating_count,
         },
+      },
+    });
+  }
+  if (search_query !== null && search_query !== "") {
+    filters["body"]["query"]["bool"]["must"].push({
+      match: {
+        coffeeName: search_query,
       },
     });
   }
