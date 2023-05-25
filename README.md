@@ -98,3 +98,47 @@ Nous avons parler des APIs de Document (CRUD), qui permettent d'indexer un docum
 Nous avons aussi parler des APIs d'index, qui permettent de mettre à jour un index, créer un index, afficher le mapping d'un index,...
 
 [https://www.elastic.co/guide/en/elasticsearch/reference/current/rest-apis.html](https://www.elastic.co/guide/en/elasticsearch/reference/current/rest-apis.html)
+
+![Schema](./Schema.png)
+
+Expliquez alors comment Elasticsearch stocke ses données et comment certaines de ces notions permettent de gagner en robustesse (en termes de sauvegarde et d’intégrité des données).
+
+Terminez en résumant les fonctionnalités de mise à l’échelle… (diapo 148 et +)
+
+Elasticsearch stocke ses données (documents) dans des indexes (similaire aux tables en sql), ces indexes sont divisés dans des espaces de stockages appelé shards qui sont reparties sur plusieurs noeud du cluster. Chaque Shard possède une ou plusieurs sauvegarde appelés replicas qui sont aussi répartis dans plusieurs noeud, ce qui permet une redondance des données et éviter les pertes des données lorsqu'un noeud disfonctione.
+
+Pour scaler son cluster, on peut :
+
+- rajouter des shards (pour ajouter du stockage, mais pas trop car cela peut surconsommer les ressources)
+- rajouter des noeuds (pour rajouter de la puissance)
+- rajouter des réplicas (pour rajouter de la redondance en cas de panne)
+  les données sont automatiquement répartie entre les noeuds, ce qui permet une mise à l'échelle simple et une utilisation équilibré des ressources,
+
+B – Testez la Scroll API : [https://www.elastic.co/guide/en/elasticsearch/reference/current/scroll-api.html](https://www.elastic.co/guide/en/elasticsearch/reference/current/scroll-api.html)
+
+D’après vos recherches pourquoi l’utiliser ? Est-ce le bon paramètre de recherche pour effectuer de la recherche paginée ?
+
+on peut l'utiliser pour afficher uniquement ce que l'utilisateur souhaite voir ce qui permet d'éviter de charger des données inutilement, cependant, ce paramètre n'est pas adapté pour faire de la recherche paginée car ce sont 2 solutions différentes.
+
+C- Kibana :
+
+- Quel est l’usage principal de Kibana ?
+
+  Kibana est un outils qui permet principalement la visualisation et l'analyse des données elastiquesearch.
+
+- Qu’est-ce qu’un Dashboard ?
+
+  Dans Kibana, un Dashboard est une interface personnalisée qui regroupe et affiche différentes visualisations, graphiques et tableaux de données pour offrir une vue d'ensemble et faciliter l'analyse des données.
+
+- [https://www.elastic.co/fr/kibana/kibna-dashboard](https://www.elastic.co/fr/kibana/kibana-dashboard)
+
+- Créer une data view (index pattern)
+- Explorer les données (Discover)
+  ![](./kibana-discover.png)
+- Créer deux visualisations
+  ![](./kibana-view-1.png)
+  ![](./kibana-view-2.png)
+- Créer un dashboard
+  ![](./kibana-dashboard.png)
+
+Observer un schéma d’index dans Kibana
